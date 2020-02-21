@@ -127,12 +127,6 @@ def search(starting_room):
             else:
                 break
 
-search(room_graph)
-print("Map Graph Dictionary", mapDictionary) 
-print("------------------")
-print("Traversal path", traversal_path)
-print("------------------")
-
 # TRAVERSAL TEST
 visited_rooms = set()
 player.current_room = world.starting_room
