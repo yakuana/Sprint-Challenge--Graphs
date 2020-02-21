@@ -1,9 +1,9 @@
 from room import Room
 from player import Player
 from world import World
-from structures import Stack, Queue #Use this for bfs/t ro dfs/t storage
+from structures import Stack, Queue 
 
-import random #gives access to shuffle
+import random 
 from ast import literal_eval
 
 # Load world
@@ -136,10 +136,10 @@ def search(starting_room):
 
 
 search(room_graph)
-print("Map Graph Dictionary", mapDictionary) 
-print("------------------")
-print("Traversal path", traversal_path)
-print("------------------")
+# print("Map Graph Dictionary", mapDictionary) 
+# print("------------------")
+# print("Traversal path", traversal_path)
+# print("------------------")
 
 
 # TRAVERSAL TEST
