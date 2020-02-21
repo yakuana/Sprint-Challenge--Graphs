@@ -5,6 +5,8 @@ from world import World
 import random
 from ast import literal_eval
 
+from structures import Stack, Queue 
+
 # Load world
 world = World()
 
@@ -28,6 +30,29 @@ player = Player(world.starting_room)
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
+
+mapDictionary = {}
+
+# search for shortest path 
+def bfs(start_room): 
+    q = Queue()
+    q.enqueue([start_room]) # enqueue starting point = start_room
+    visited = set() 
+
+    # while queue is not empty 
+    while q.size() > 0:
+        path = q.dequeue()         # pop first available path
+        current_room = path[-1]    # current_room = last item in the path
+        visited.add(current_room)
+
+        # traverse each direction in current_room
+        for direction in mapDictionary[current_room]:
+            if mapDictionary[current_room][direction] == '?':
+                return path
+            elif mapDictionary[current_room][direction] not in visited:
+                new_path = list(path)                                      # create a new path
+                new_path.append(mapDictionary[current_room][direction])    # append the direction to new path
+                q.enqueue(new_path) 
 
 
 
