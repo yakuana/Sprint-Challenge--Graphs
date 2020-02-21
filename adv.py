@@ -34,11 +34,11 @@ traversal_path = []
 # graph 
 mapDictionary = {}
 
-def bfs(start_room): 
+def bfs(start_room_id): 
     # breath first search for shortest path 
 
     q = Queue()
-    q.enqueue([start_room]) # enqueue starting point = start_room
+    q.enqueue([start_room_id]) # enqueue starting point = start_room_id
     visited = set() 
 
     # while queue is not empty 
@@ -82,6 +82,9 @@ def search(starting_room):
             if traversal_path:
                 prevRoom = opp_directions[traversal_path[-1]]    # previous room is the reverse of last travel path
                 room_dict[prevRoom] = visited_rooms              # add the prevRoom to the room_dict
+            
+            # add room_dict to mapDictionary 
+            mapDictionary[room_id] = room_dict
         else:
             # set room_dict to room at index room_id in mapDictionary
             room_dict = mapDictionary[room_id]
@@ -105,7 +108,7 @@ def search(starting_room):
             player.travel(direction)
             room_move = player.current_room
             mapDictionary[current_room.id][direction] = room_move.id
-
+            visited_rooms = current_room.id
         else:
             # BFS to search for next exits/possible rooms using room_id
             next_room = bfs(room_id)
@@ -113,7 +116,7 @@ def search(starting_room):
             # if the path of next_room has results from bfs
             if next_room is not None and len(next_room) > 0:
                 # iterate the length of the room to get room id's
-                for i in range(len(next_room) -1):
+                for i in range(len(next_room) - 1):
                     # iterate the mapDictionary's next_room at current to get cardinal directions 
                     for direction in mapDictionary[next_room[i]]:
                         # if direction of next_room[i] == the following room's, then found through bfs
@@ -124,11 +127,11 @@ def search(starting_room):
             else:
                 break
 
-# search(room_graph)
-# print("Map Graph Dictionary", mapDictionary) 
-# print("------------------")
-# print("Traversal path", traversal_path)
-# print("------------------")
+search(room_graph)
+print("Map Graph Dictionary", mapDictionary) 
+print("------------------")
+print("Traversal path", traversal_path)
+print("------------------")
 
 # TRAVERSAL TEST
 visited_rooms = set()
