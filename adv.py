@@ -31,10 +31,12 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+# graph 
 mapDictionary = {}
 
-# search for shortest path 
 def bfs(start_room): 
+    # breath first search for shortest path 
+
     q = Queue()
     q.enqueue([start_room]) # enqueue starting point = start_room
     visited = set() 
@@ -55,6 +57,78 @@ def bfs(start_room):
                 q.enqueue(new_path) 
 
 
+def search(starting_room): 
+    # dft, explore all paths of maze until exit is path found
+
+    opp_directions = {'n':'s', 's':'n', 'e':'w', 'w':'e'}
+    visited_rooms = 0  # visited room counter 
+    
+    # complete when mapDictionary length == room_graph length 
+    while len(mapDictionary) != len(room_graph):
+        # current room info
+        current_room = player.current_room
+        room_id = current_room.id
+        
+        # graph (dictionary) of rooms with [n,s,e,w] as key and either room_id or '?' as value
+        room_dict = {}
+
+        if room_id not in mapDictionary:
+            # find the possible exits
+            for i in current_room.get_exits():
+                # set key at [i] value to '?'
+                room_dict[i] = '?'
+            
+            # update room using traversal_path array 
+            if traversal_path:
+                prevRoom = opp_directions[traversal_path[-1]]    # previous room is the reverse of last travel path
+                room_dict[prevRoom] = visited_rooms              # add the prevRoom to the room_dict
+        else:
+            # set room_dict to room at index room_id in mapDictionary
+            room_dict = mapDictionary[room_id]
+
+        # will store list of possible exits    
+        possible_exits = list()
+
+        # iterate through room_dict
+        for direction in room_dict:
+            if room_dict[direction] == '?':
+                # append all '?'s to possible_exits list 
+                possible_exits.append(direction)
+
+        # if '?'s found 
+        if len(possible_exits) != 0:
+            random.shuffle(possible_exits)      # reorganize order of list 
+            direction = possible_exits[0]       # set direction to possible direction at index[0]  
+            traversal_path.append(direction)    # append that direction to the traversal path
+           
+            # move player in new direction using travel function and update mapDictionary with room_move id 
+            player.travel(direction)
+            room_move = player.current_room
+            mapDictionary[current_room.id][direction] = room_move.id
+
+        else:
+            # BFS to search for next exits/possible rooms using room_id
+            next_room = bfs(room_id)
+           
+            # if the path of next_room has results from bfs
+            if next_room is not None and len(next_room) > 0:
+                # iterate the length of the room to get room id's
+                for i in range(len(next_room) -1):
+                    # iterate the mapDictionary's next_room at current to get cardinal directions 
+                    for direction in mapDictionary[next_room[i]]:
+                        # if direction of next_room[i] == the following room's, then found through bfs
+                        if mapDictionary[next_room[i]][direction] == next_room[i + 1]:
+                            # append travel path and move player 
+                            traversal_path.append(direction)
+                            player.travel(direction)
+            else:
+                break
+
+# search(room_graph)
+# print("Map Graph Dictionary", mapDictionary) 
+# print("------------------")
+# print("Traversal path", traversal_path)
+# print("------------------")
 
 # TRAVERSAL TEST
 visited_rooms = set()
